@@ -5,7 +5,7 @@ import uncertainties as uc
 import uncertainties.umath as um
 from uncertainties import unumpy as unp
 
-class FileWork():
+class FileWork:
     def GetMagnitudeWithError(fileName):
         magWithError = np.dtype([("mag", "f8"), ("error", "f8")])
 
