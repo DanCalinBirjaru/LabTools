@@ -5,7 +5,7 @@ import uncertainties as uc
 import uncertainties.umath as um
 from uncertainties import unumpy as unp
 
-class FileWork:
+class FileWork():
     def GetMagnitudeWithError(fileName):
         magWithError = np.dtype([("mag", "f8"), ("error", "f8")])
 
@@ -92,9 +92,15 @@ class PlottingTools:
         fig, ax = plt.subplots()
         ax.invert_yaxis()
 
-        plt.plot(unp.nominal_values(V), unp.nominal_values(B - V), "kx")
+        bv = unp.nominal_values(B - V)
+        v = unp.nominal_values(V)
 
-        plt.xlabel("V")
-        plt.ylabel("B - V")
+        plt.plot(bv, v,"kx")
+
+        plt.xlabel("B - V")
+        plt.ylabel("V")
+
+        plt.xlim((min(bv), max(bv)))
+        plt.ylim((min(v), max(v)))
         
         plt.savefig(plotName)  
