@@ -1,4 +1,3 @@
-from asyncio.windows_events import NULL
 import numpy as np
 import matplotlib.pyplot as plt
 import uncertainties as uc
@@ -6,12 +5,12 @@ import uncertainties.umath as um
 from uncertainties import unumpy as unp
 
 class FileWork():
-    def GetMagnitudeWithError(fileName):
+    def GetMagnitudeWithErrorFromGaia(fileName):
         magWithError = np.dtype([("mag", "f8"), ("error", "f8")])
 
         mag, error = np.loadtxt(fileName, dtype = magWithError, usecols = (3, 4), unpack = True)
 
-        return unp.uarray([mag, error])
+        return unp.uarray(mag, error)
 
     def OffsetPositionFromGaia(inputFile, outputFile, offsetX, offsetY):
         with open(inputFile) as f:
@@ -87,20 +86,25 @@ class PlottingTools:
         return A * np.cos(omega * t + phi)
 
     def PlotBV(B, V, plotName):
-        plt.figure()
-        
+
         fig, ax = plt.subplots()
         ax.invert_yaxis()
 
+        plt.figure()
+
         bv = unp.nominal_values(B - V)
+        bvError = unp.std_devs(B - V)
+
         v = unp.nominal_values(V)
+        vError = unp.std_devs(V)
 
         plt.plot(bv, v,"kx")
+        plt.errorbar(x = bv, y = v, xerr = bvError, yerr = vError, fmt = 'x', ecolor = 'black', color = 'black')
 
         plt.xlabel("B - V")
         plt.ylabel("V")
 
         plt.xlim((min(bv), max(bv)))
-        plt.ylim((min(v), max(v)))
+        plt.ylim((max(v), min(v)))
         
         plt.savefig(plotName)  
